@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Management</title>
+</head>
+<body>
+    <!-- Display button that triggers the displayVehicle function -->
+    <button onclick="displayVehicle()">Display</button> 
+
+    <script>
+        // Define a JavaScript class for managing vehicle details
+        class ParkVehicle {
+            constructor() {
+                this.vehicles = [];
+            }
+
+            // Method for adding vehicle details to the list
+            vehicleDetails(VNO, vmodal, phoneno, Cname, check_in) {
+                const vehicle = {
+                    VNO,
+                    vmodal,
+                    phoneno,
+                    Cname,
+                    check_in,
+                    check_out: null
+                };
+                this.vehicles.push(vehicle);
+            }
+
+            // Method for displaying vehicle details in a table
+            displayVehicle() {
+                console.table(this.vehicles);
+            }
+
+            // Method for searching for a specific vehicle by VNO
+            searchVehicle(vno) {
+                const data = this.vehicles.find(vehicle => vehicle.VNO === vno);
+                if (data === undefined) {
+                    console.log("Vehicle not found");
+                    return false;
+                }
+                console.table(data);
+            }
+
+            // Method for checking out a vehicle and calculating the amount to be paid
+            checkout(vno, checkouttime) {
+                const data = this.vehicles.find(vehicle => vehicle.VNO === vno);
+                if (data === undefined) {
+                    console.log("Vehicle not found");
+                    return false;
+                }
+
+                const duration = (new Date(checkouttime) - new Date(data.check_in)) / (1000 * 60);
+                let amount = 0;
+
+                if (duration <= 30) {
+                    amount = 30;
+                } else {
+                    const extraTime = duration - 30;
+                    amount = 30 + Math.ceil(extraTime / 30) * 10;
+                }
+
+                data.check_out = checkouttime;
+                console.log("Vehicle details:");
+                console.table(data);
+                console.log("Duration: " + duration + " minutes");
+                console.log("Amount to pay: $" + amount);
+            }
+        }
+
+        // Create an instance of the ParkVehicle class
+        const parkingManager = new ParkVehicle();
+
+        // Add sample vehicle records
+        parkingManager.vehicleDetails("KA-01-HH-1234", "Bike", 9630288340, "Rensukh", new Date("10 13 2023 09:00:00"));
+        parkingManager.vehicleDetails("KA-01-HH-1234", "Bike", 6393104098, "Aryan", new Date("10 3 2023 09:30:00"));
+        parkingManager.vehicleDetails("KA-01-HH-1234", "Car", 9630234340, "Ravi", new Date("19 2 2023 10:00:00"));
+        parkingManager.vehicleDetails("KA-01-HH-1235", "Car" , 96302883410, "Lalila", new Date("02 23 2023 10:30:00"));
+        parkingManager.vehicleDetails("KA-01-HH-1236","Scooter",96302883420, "Priya", new Date("02 23 2023 11:00:00"));
+
+        // Function to display vehicle details when the button is clicked
+        function displayVehicle() {
+            parkingManager.displayVehicle();
+        }
+    </script>
+</body>
+</html>
